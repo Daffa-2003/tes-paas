@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - Aplikasi Node.js Docker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar">
+        <div class="logo">
+          <i class="fas fa-docker"></i>
+          <span>Node.js + Docker</span>
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a href="/" class="active"><i class="fas fa-home"></i> Home</a>
+          </li>
+          <li>
+            <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="content">
+        <div class="hero">
+          <h1><i class="fas fa-rocket"></i> Selamat Datang di Aplikasi Node.js dengan Docker!</h1>
+          <p class="subtitle">Proyek sederhana yang menunjukkan bagaimana mengemas aplikasi Node.js dengan Docker</p>
+        </div>
+
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h3>Node.js</h3>
+            <p>Aplikasi ini dibangun dengan Node.js dan Express.js untuk backend yang ringan dan cepat.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-ship"></i>
+            </div>
+            <h3>Docker Container</h3>
+            <p>Aplikasi dikemas dalam Docker container untuk konsistensi lingkungan dan kemudahan deployment.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <h3>Dua Halaman</h3>
+            <p>Proyek ini hanya terdiri dari 2 halaman sederhana: Home dan About.</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h2><i class="fas fa-terminal"></i> Informasi Server</h2>
+          <div id="server-info">
+            <p><i class="fas fa-spinner fa-spin"></i> Memuat informasi server...</p>
+          </div>
+          <button id="refresh-btn" class="btn"><i class="fas fa-sync-alt"></i> Refresh Info</button>
+        </div>
+
+        <div class="instructions">
+          <h2><i class="fas fa-cogs"></i> Cara Menjalankan</h2>
+          <div class="code-block">
+            <p><strong>Build Docker image:</strong></p>
+            <code>docker build -t nodejs-app .</code>
+          </div>
+          <div class="code-block">
+            <p><strong>Jalankan container:</strong></p>
+            <code>docker run -p 3000:3000 -d nodejs-app</code>
+          </div>
+          <div class="code-block">
+            <p><strong>Akses aplikasi:</strong></p>
+            <code>Buka http://localhost:3000 di browser</code>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>© 2023 Aplikasi Node.js Docker Sederhana. Dibuat dengan <i class="fas fa-heart"></i> untuk pembelajaran.</p>
+        <p>Kunjungi halaman <a href="/about">About</a> untuk informasi lebih lanjut.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Fungsi untuk mengambil informasi server
+      async function loadServerInfo() {
+        try {
+          const response = await fetch("/api/info");
+          const data = await response.json();
+
+          const infoDiv = document.getElementById("server-info");
+          infoDiv.innerHTML = `
+                    <p><i class="fas fa-server"></i> <strong>Aplikasi:</strong> ${data.app}</p>
+                    <p><i class="fas fa-tag"></i> <strong>Versi:</strong> ${data.version}</p>
+                    <p><i class="fas fa-file"></i> <strong>Halaman:</strong> ${data.pages.join(", ")}</p>
+                    <p><i class="fas fa-clock"></i> <strong>Waktu Server:</strong> ${new Date(data.serverTime).toLocaleString()}</p>
+                    <p><i class="fas fa-desktop"></i> <strong>Host:</strong> ${window.location.hostname}</p>
+                `;
+        } catch (error) {
+          document.getElementById("server-info").innerHTML = `<p><i class="fas fa-exclamation-triangle"></i> Gagal memuat informasi server</p>`;
+        }
+      }
+
+      // Event listener untuk tombol refresh
+      document.getElementById("refresh-btn").addEventListener("click", loadServerInfo);
+
+      // Muat informasi saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", loadServerInfo);
+    </script>
+  </body>
+</html>
