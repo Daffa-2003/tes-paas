@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ] # Ganti dengan nama branch utama kamu (master/main)
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Ambil Kodingan
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Siapkan Node.js (Simulasi lingkungan server)
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    # 3. Install Dependency
+    - name: Install Dependencies
+      run: npm install
+
+    # 4. JALANKAN TEST (Ini Tahap CI)
+    - name: Run Tests
+      run: npm test
+      # Jika script ini gagal (exit 1), proses berhenti disini.
+      # Webhook deploy tidak akan dikirim.
+
+    # 5. KIRIM WEBHOOK KE PAAS (Ini Tahap CD)
+    # Langkah ini cuma jalan kalau langkah no 4 sukses
+    - name: Trigger PaaS Deploy
+      if: success()
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+        -d '{"repository": {"clone_url": "https://github.com/${{ github.repository }}.git"}}' \
+        ${{ secrets.PAAS_WEBHOOK_URL }}
