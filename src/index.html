@@ -1,11 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home - Aplikasi Node.js</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
     <div class="container">
@@ -26,10 +29,22 @@
 
       <main class="content">
         <div class="hero">
-          <h1><i class="fas fa-rocket"></i>Selamat Datang di Aplikasi Node.js dengan Docker SWARM!</h1>
-          <h3>Aplikasi ini berjalan di atas Docker Swarm untuk orkestrasi container yang efisien.</h3>
-          <p class="subtitle">Docker Swarm digunakan untuk mengelola dan mengorkestrasi container secara otomatis.</p>
-          p class="subtitle">Dengan Docker Swarm, aplikasi ini dapat dengan mudah diskalakan dan dikelola dalam lingkungan produksi.</p>
+          <h1>
+            <i class="fas fa-rocket"></i>Selamat Datang di Aplikasi Node.js
+            dengan Docker SWARM!
+          </h1>
+          <h3>
+            Aplikasi ini berjalan di atas Docker Swarm untuk orkestrasi
+            container yang efisien.
+          </h3>
+          <p class="subtitle">
+            Docker Swarm digunakan untuk mengelola dan mengorkestrasi container
+            secara otomatis.
+          </p>
+          <p class="subtitle">
+            Dengan Docker Swarm, aplikasi ini dapat dengan mudah diskalakan dan
+            dikelola dalam lingkungan produksi.
+          </p>
         </div>
 
         <div class="features">
@@ -37,8 +52,21 @@
             <div class="feature-icon">
               <i class="fas fa-code"></i>
             </div>
+            <h3>CI/CD</h3>
+            <p>
+              Proyek ini dirancang untuk mendukung Continuous Integration dan
+              Continuous Deployment (CI/CD) dengan mudah.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-code"></i>
+            </div>
             <h3>Node.js</h3>
-            <p>Aplikasi ini dibangun dengan Node.js dan Express.js untuk backend yang ringan dan cepat.</p>
+            <p>
+              Aplikasi ini dibangun dengan Node.js dan Express.js untuk backend
+              yang ringan dan cepat.
+            </p>
           </div>
 
           <div class="feature-card">
@@ -46,8 +74,11 @@
               <i class="fas fa-ship"></i>
             </div>
             <h3>Docker Container</h3>
-            <p>Aplikasi dikemas dalam Docker container untuk konsistensi lingkungan dan kemudahan deployment.</p>
-            <p>Ini berbejan diatas docker swarm</p>
+            <p>
+              Aplikasi dikemas dalam Docker container untuk konsistensi
+              lingkungan dan kemudahan deployment.
+            </p>
+            <p>Ini berjalan di atas Docker Swarm</p>
           </div>
 
           <div class="feature-card">
@@ -55,16 +86,22 @@
               <i class="fas fa-layer-group"></i>
             </div>
             <h3>Dua Halaman</h3>
-            <p>Proyek ini hanya terdiri dari 2 halaman sederhana: Home dan About.</p>
+            <p>
+              Proyek ini hanya terdiri dari 2 halaman sederhana: Home dan About.
+            </p>
           </div>
         </div>
 
         <div class="info-box">
           <h2><i class="fas fa-terminal"></i> Informasi Server</h2>
           <div id="server-info">
-            <p><i class="fas fa-spinner fa-spin"></i> Memuat informasi server...</p>
+            <p>
+              <i class="fas fa-spinner fa-spin"></i> Memuat informasi server...
+            </p>
           </div>
-          <button id="refresh-btn" class="btn"><i class="fas fa-sync-alt"></i> Refresh Info</button>
+          <button id="refresh-btn" class="btn">
+            <i class="fas fa-sync-alt"></i> Refresh Info
+          </button>
         </div>
 
         <div class="instructions">
@@ -85,8 +122,14 @@
       </main>
 
       <footer class="footer">
-        <p>© 2023 Aplikasi Node.js Docker Sederhana. Dibuat dengan <i class="fas fa-heart"></i> untuk pembelajaran.</p>
-        <p>Kunjungi halaman <a href="/about">About</a> untuk informasi lebih lanjut.</p>
+        <p>
+          © 2023 Aplikasi Node.js Docker Sederhana. Dibuat dengan
+          <i class="fas fa-heart"></i> untuk pembelajaran.
+        </p>
+        <p>
+          Kunjungi halaman <a href="/about">About</a> untuk informasi lebih
+          lanjut.
+        </p>
       </footer>
     </div>
 
@@ -106,12 +149,15 @@
                     <p><i class="fas fa-desktop"></i> <strong>Host:</strong> ${window.location.hostname}</p>
                 `;
         } catch (error) {
-          document.getElementById("server-info").innerHTML = `<p><i class="fas fa-exclamation-triangle"></i> Gagal memuat informasi server</p>`;
+          document.getElementById("server-info").innerHTML =
+            `<p><i class="fas fa-exclamation-triangle"></i> Gagal memuat informasi server</p>`;
         }
       }
 
       // Event listener untuk tombol refresh
-      document.getElementById("refresh-btn").addEventListener("click", loadServerInfo);
+      document
+        .getElementById("refresh-btn")
+        .addEventListener("click", loadServerInfo);
 
       // Muat informasi saat halaman dimuat
       document.addEventListener("DOMContentLoaded", loadServerInfo);
