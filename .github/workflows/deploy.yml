@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
 
-# Setup permission agar GitHub Action boleh upload image ke GHCR
 permissions:
   contents: read
   packages: write
@@ -13,22 +12,26 @@ jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Ambil Kodingan
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Setup Node.js & Testing (CI)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
       - name: Install Dependencies
         run: npm install
+
       - name: Run Tests
         run: npm test
-        # Jika test gagal, proses berhenti di sini.
 
-      # 3. Login ke GitHub Container Registry (GHCR)
+      # --- PERBAIKAN DI SINI ---
+      # Langkah ini mengubah "Daffa-2003/tes-paas" menjadi "daffa-2003/tes-paas"
+      - name: Lowercase Repo Name
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - name: Log in to the Container registry
         if: success()
         uses: docker/login-action@v2
@@ -37,21 +40,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 4. Build Docker Image & Push ke GHCR (Tahap Penting!)
       - name: Build and push Docker image
         if: success()
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          # Ganti 'username' dan 'repo' sesuai milik Anda (huruf kecil semua)
-          tags: ghcr.io/${{ github.repository }}:latest
+          # Gunakan variable env.REPO_LOWER yang sudah dikecilkan hurufnya
+          tags: ghcr.io/${{ env.REPO_LOWER }}:latest
 
-      # 5. Kirim Webhook ke PaaS (CD)
-      # Trigger ini hanya jalan setelah Image berhasil masuk ke GHCR
       - name: Trigger PaaS Deploy
         if: success()
         run: |
+          # Gunakan variable env.REPO_LOWER juga di sini agar sinkron
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"image": "ghcr.io/${{ github.repository }}:latest"}' \
+          -d '{"image": "ghcr.io/${{ env.REPO_LOWER }}:latest"}' \
           ${{ secrets.PAAS_WEBHOOK_URL }}
