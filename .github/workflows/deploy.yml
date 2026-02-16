@@ -1,38 +1,57 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline to GHCR
 
 on:
   push:
-    branches: [ "main" ] # Ganti dengan nama branch utama kamu (master/main)
+    branches: [ "main" ]
+
+# Setup permission agar GitHub Action boleh upload image ke GHCR
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build-and-test:
+  build-test-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    # 1. Ambil Kodingan
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # 1. Ambil Kodingan
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # 2. Siapkan Node.js (Simulasi lingkungan server)
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-    # 3. Install Dependency
-    - name: Install Dependencies
-      run: npm install
+      # 2. Setup Node.js & Testing (CI)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Tests
+        run: npm test
+        # Jika test gagal, proses berhenti di sini.
 
-    # 4. JALANKAN TEST (Ini Tahap CI)
-    - name: Run Tests
-      run: npm test
-      # Jika script ini gagal (exit 1), proses berhenti disini.
-      # Webhook deploy tidak akan dikirim.
+      # 3. Login ke GitHub Container Registry (GHCR)
+      - name: Log in to the Container registry
+        if: success()
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    # 5. KIRIM WEBHOOK KE PAAS (Ini Tahap CD)
-    # Langkah ini cuma jalan kalau langkah no 4 sukses
-    - name: Trigger PaaS Deploy
-      if: success()
-      run: |
-        curl -X POST -H "Content-Type: application/json" \
-        -d '{"repository": {"clone_url": "https://github.com/${{ github.repository }}.git"}}' \
-        ${{ secrets.PAAS_WEBHOOK_URL }}
+      # 4. Build Docker Image & Push ke GHCR (Tahap Penting!)
+      - name: Build and push Docker image
+        if: success()
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          # Ganti 'username' dan 'repo' sesuai milik Anda (huruf kecil semua)
+          tags: ghcr.io/${{ github.repository }}:latest
+
+      # 5. Kirim Webhook ke PaaS (CD)
+      # Trigger ini hanya jalan setelah Image berhasil masuk ke GHCR
+      - name: Trigger PaaS Deploy
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"image": "ghcr.io/${{ github.repository }}:latest"}' \
+          ${{ secrets.PAAS_WEBHOOK_URL }}
