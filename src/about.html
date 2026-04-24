@@ -20,6 +20,11 @@
           <i class="fab fa-docker"></i>
           <span>Swarm Playbook</span>
         </div>
+        <div class="datetime-status" aria-live="polite">
+          <span class="datetime-label">Status Waktu</span>
+          <span id="status-date" class="datetime-date"></span>
+          <span id="status-time" class="datetime-time"></span>
+        </div>
         <ul class="nav-links">
           <li>
             <a href="/"><i class="fas fa-house"></i> Home</a>
@@ -155,6 +160,31 @@ docker swarm leave --force</code>
     </div>
 
     <script>
+      const dateElement = document.getElementById("status-date");
+      const timeElement = document.getElementById("status-time");
+
+      const dateFormatter = new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+
+      const timeFormatter = new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      const updateDateTimeStatus = () => {
+        const now = new Date();
+        dateElement.textContent = dateFormatter.format(now);
+        timeElement.textContent = `${timeFormatter.format(now)} (lokal)`;
+      };
+
+      updateDateTimeStatus();
+      setInterval(updateDateTimeStatus, 1000);
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
