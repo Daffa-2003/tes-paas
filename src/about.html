@@ -1,136 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About - Aplikasi Node.js</title>
+    <title>About - Step-by-Step Docker Swarm</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
   </head>
   <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
     <div class="container">
-      <nav class="navbar">
+      <nav class="navbar reveal">
         <div class="logo">
-          <i class="fas fa-docker"></i>
-          <span>Node.js + Docker</span>
+          <i class="fab fa-docker"></i>
+          <span>Swarm Playbook</span>
         </div>
         <ul class="nav-links">
           <li>
-            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/"><i class="fas fa-house"></i> Home</a>
           </li>
           <li>
-            <a href="/about" class="active"><i class="fas fa-info-circle"></i> About</a>
+            <a href="/about" class="active"><i class="fas fa-map"></i> Detail Step</a>
           </li>
         </ul>
       </nav>
 
       <main class="content">
-        <div class="hero">
-          <h1><i class="fas fa-info-circle"></i> Tentang Proyek Ini</h1>
-          <p class="subtitle">Proyek demonstrasi sederhana menggunakan Node.js dan Docker</p>
-        </div>
+        <section class="hero reveal">
+          <p class="eyebrow">Step-by-Step Deployment</p>
+          <h1>Panduan Lengkap Deploy ke Docker Swarm</h1>
+          <p class="subtitle">
+            Dari nol sampai service berjalan stabil. Ikuti urutan ini untuk
+            environment single-manager atau cluster kecil.
+          </p>
+        </section>
 
-        <div class="about-content">
-          <div class="about-section">
-            <h2><i class="fas fa-bullseye"></i> Tujuan Proyek</h2>
-            <p>Proyek ini dibuat untuk menunjukkan cara membuat aplikasi Node.js sederhana dan mengemasnya menggunakan Docker.</p>
-            <p>Dengan proyek ini, Anda dapat belajar:</p>
+        <section class="about-content">
+          <article class="about-section reveal">
+            <h2><i class="fas fa-list-check"></i> Prasyarat</h2>
             <ul>
-              <li>Membuat aplikasi web sederhana dengan Node.js dan Express</li>
-              <li>Mengemas aplikasi Node.js dalam Docker container</li>
-              <li>Membuat Dockerfile yang efisien</li>
-              <li>Menjalankan aplikasi dalam lingkungan yang terkonsistensi dengan Docker</li>
+              <li>Docker Engine sudah terpasang dan aktif.</li>
+              <li>Port aplikasi (contoh 3000) boleh diakses dari host.</li>
+              <li>Project punya Dockerfile dan bisa di-build lokal.</li>
             </ul>
-          </div>
+          </article>
 
-          <div class="about-section">
-            <h2><i class="fas fa-cube"></i> Teknologi yang Digunakan</h2>
-            <div class="tech-grid">
-              <div class="tech-item">
-                <div class="tech-icon nodejs">
-                  <i class="fab fa-node-js"></i>
-                </div>
-                <h3>Node.js</h3>
-                <p>Runtime JavaScript untuk backend</p>
+          <article class="about-section reveal">
+            <h2><i class="fas fa-diagram-project"></i> Step 1 - Aktifkan Swarm</h2>
+            <div class="commands single-column">
+              <div class="command-item">
+                <h3>Jadikan Node Sebagai Manager</h3>
+                <code>docker swarm init</code>
+                <p>
+                  Perintah ini membuat cluster swarm baru dan node saat ini jadi
+                  manager utama.
+                </p>
               </div>
-              <div class="tech-item">
-                <div class="tech-icon express">
-                  <i class="fas fa-bolt"></i>
-                </div>
-                <h3>Express.js</h3>
-                <p>Framework web untuk Node.js</p>
-              </div>
-              <div class="tech-item">
-                <div class="tech-icon docker">
-                  <i class="fab fa-docker"></i>
-                </div>
-                <h3>Docker</h3>
-                <p>Platform containerization</p>
-              </div>
-              <div class="tech-item">
-                <div class="tech-icon html5">
-                  <i class="fab fa-html5"></i>
-                </div>
-                <h3>HTML5 & CSS3</h3>
-                <p>Untuk frontend yang responsif</p>
+              <div class="command-item">
+                <h3>Cek Status Node</h3>
+                <code>docker node ls</code>
+                <p>
+                  Pastikan node berstatus Ready dan role-nya Manager.
+                </p>
               </div>
             </div>
-          </div>
+          </article>
 
-          <div class="about-section">
-            <h2><i class="fas fa-file-code"></i> Struktur Proyek</h2>
-            <div class="code-block">
-              <pre>
-nodejs-docker-project/
-├── Dockerfile          # Konfigurasi Docker
-├── package.json        # Dependensi Node.js
-├── server.js           # Server utama
-├── public/
-│   ├── index.html      # Halaman utama
-│   ├── about.html      # Halaman about
-│   └── styles.css      # Stylesheet CSS
-└── README.md           Dokumentasi
-</pre
-              >
-            </div>
-          </div>
-
-          <div class="about-section">
-            <h2><i class="fas fa-ship"></i> Docker Commands</h2>
-            <div class="commands">
+          <article class="about-section reveal">
+            <h2><i class="fas fa-cubes"></i> Step 2 - Build dan Push Image</h2>
+            <div class="commands single-column">
               <div class="command-item">
                 <h3>Build Image</h3>
-                <code>docker build -t nodejs-app .</code>
-                <p>Membuat Docker image dari Dockerfile</p>
+                <code>docker build -t nodejs-app:1.0 .</code>
+                <p>Image lokal siap dipakai untuk membuat service.</p>
               </div>
               <div class="command-item">
-                <h3>Run Container</h3>
-                <code>docker run -p 3000:3000 nodejs-app</code>
-                <p>Menjalankan container dari image yang dibuat</p>
-              </div>
-              <div class="command-item">
-                <h3>Run in Background</h3>
-                <code>docker run -p 3000:3000 -d nodejs-app</code>
-                <p>Menjalankan container di background (detached mode)</p>
-              </div>
-              <div class="command-item">
-                <h3>Lihat Container</h3>
-                <code>docker ps</code>
-                <p>Melihat container yang sedang berjalan</p>
+                <h3>(Opsional) Push ke Registry</h3>
+                <code>docker tag nodejs-app:1.0 your-registry/nodejs-app:1.0
+docker push your-registry/nodejs-app:1.0</code>
+                <p>
+                  Wajib dilakukan kalau worker node berada di host berbeda.
+                </p>
               </div>
             </div>
-          </div>
-        </div>
+          </article>
 
-        <div class="back-home">
-          <a href="/" class="btn"> <i class="fas fa-arrow-left"></i> Kembali ke Halaman Utama </a>
+          <article class="about-section reveal">
+            <h2><i class="fas fa-rocket"></i> Step 3 - Deploy Service ke Swarm</h2>
+            <div class="commands single-column">
+              <div class="command-item">
+                <h3>Buat Service</h3>
+                <code>docker service create --name webapp --replicas 3 -p 3000:3000 nodejs-app:1.0</code>
+                <p>
+                  Swarm akan membuat 3 task container dan mendistribusikannya
+                  secara otomatis.
+                </p>
+              </div>
+              <div class="command-item">
+                <h3>Verifikasi Service</h3>
+                <code>docker service ls
+docker service ps webapp</code>
+                <p>Cek jumlah replika dan kondisi task apakah Running.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="about-section reveal">
+            <h2><i class="fas fa-arrows-up-down-left-right"></i> Step 4 - Scale dan Update</h2>
+            <div class="commands single-column">
+              <div class="command-item">
+                <h3>Scale Replika</h3>
+                <code>docker service scale webapp=5</code>
+                <p>Naikkan replika saat trafik tinggi.</p>
+              </div>
+              <div class="command-item">
+                <h3>Rolling Update Image</h3>
+                <code>docker service update --image nodejs-app:1.1 webapp</code>
+                <p>Update versi aplikasi tanpa menghentikan service total.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="about-section reveal">
+            <h2><i class="fas fa-broom"></i> Step 5 - Hapus Service dan Keluar Swarm</h2>
+            <div class="commands single-column">
+              <div class="command-item">
+                <h3>Cleanup</h3>
+                <code>docker service rm webapp
+docker swarm leave --force</code>
+                <p>
+                  Gunakan langkah ini saat lab/testing selesai agar host bersih.
+                </p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <div class="back-home reveal">
+          <a href="/" class="btn">
+            <i class="fas fa-arrow-left"></i> Kembali ke Halaman Utama
+          </a>
         </div>
       </main>
 
-      <footer class="footer">
-        <p>© 2023 Aplikasi Node.js Docker Sederhana. Proyek pembelajaran.</p>
-        <p>Dibuat untuk demonstrasi penggunaan Docker dengan Node.js.</p>
+      <footer class="footer reveal">
+        <p>© 2026 Docker Swarm Playbook. Materi ringkas untuk latihan deployment.</p>
+        <p>Praktikkan langsung command di atas agar cepat terbiasa dengan Swarm.</p>
       </footer>
     </div>
+
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("show");
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      document.querySelectorAll(".reveal").forEach((item) => {
+        observer.observe(item);
+      });
+    </script>
   </body>
 </html>
